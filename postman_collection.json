@@ -1,0 +1,126 @@
+{
+    "info": {
+        "_postman_id": "7bec1a43-03ec-4a9f-9056-83b2ede32d61",
+        "name": "CapWSB-FitnessTracker",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "17639494"
+    },
+    "item": [
+        {
+            "name": "Create User",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"firstName\": \"Jan\",\n    \"lastName\": \"Kowalski\",\n    \"birthdate\": \"1990-03-12\",\n    \"email\": \"jan.kowalski@example.com\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:8080/v1/users",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["v1", "users"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update User",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"firstName\": \"Anna\",\n    \"lastName\": \"Nowak\",\n    \"birthdate\": \"1985-07-24\",\n    \"email\": \"anna.nowak@example.com\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:8080/v1/users/1",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["v1", "users", "1"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Training",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"user\": {\n        \"id\": 1\n    },\n    \"startTime\": \"2025-01-15T10:00:00\",\n    \"endTime\": \"2025-01-15T11:00:00\",\n    \"activityType\": \"RUNNING\",\n    \"distance\": 5.0,\n    \"averageSpeed\": 10.0\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:8080/v1/trainings",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["v1", "trainings"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Training",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"user\": {\n        \"id\": 1\n    },\n    \"startTime\": \"2025-01-16T09:00:00\",\n    \"endTime\": \"2025-01-16T10:00:00\",\n    \"activityType\": \"CYCLING\",\n    \"distance\": 20.5,\n    \"averageSpeed\": 15.0\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:8080/v1/trainings/1",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["v1", "trainings", "1"]
+                }
+            },
+            "response": []
+        }
+    ]
+}

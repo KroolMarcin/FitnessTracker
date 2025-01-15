@@ -1,41 +1,126 @@
-
 package pl.wsb.fitnesstracker.user.internal;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import pl.wsb.fitnesstracker.exception.api.NotFoundException;
 import pl.wsb.fitnesstracker.user.api.User;
+import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/v1/users")
+@RequiredArgsConstructor
+class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserServiceImpl userService;
+
+    private final UserMapper userMapper;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public List<UserDto> getAllUsers() {
+        return userService.findAllUsers()
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<User> addUser(@RequestBody UserDto userDto) throws InterruptedException {
+
+        // Demonstracja how to use @RequestBody
+        System.out.println("User with e-mail: " + userDto.email() + "passed to the request");
+
+        // return userService.createUser(userMapper.toEntity(userDto));
+        User createdUser = userService.createUser(userMapper.toEntity(userDto));
+        return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    /**
+     * This method returns a list of all users in a simplified form.
+     * 
+     * @return List of all users in a simplified form
+     */
+    @GetMapping("/simple")
+    public List<UserSimpleDto> getAllUsersSimple() {
+        return userService.findAllUsers()
+                .stream()
+                .map(userMapper::toSimpleDto)
+                .toList();
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    /**
+     * This method returns a user with a given ID.
+     * 
+     * @param userId ID of the user to be returned
+     * @return User with given ID
+     */
+    @GetMapping("/{userId}")
+    public UserDto getUser(@PathVariable Long userId) {
+        return userService.getUser(userId)
+                .map(userMapper::toDto)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    /**
+     * This method returns a user with a given e-mail address.
+     * 
+     * @param email E-mail address of the user to be returned
+     * @return User with given e-mail address
+     */
+    @GetMapping("/email")
+    public List<UserSimpleDto> getUserByEmail(@RequestParam String email) {
+        return userService.getUserByEmail(email)
+                .stream()
+                .map(userMapper::toSimpleDto)
+                .toList();
+    }
+
+    /**
+     * This method returns a list of users older than a given birth date.
+     * 
+     * @param birthDate Birth date to compare
+     * @return List of users older than given birth date
+     */
+    @GetMapping("/older/{birthDate}")
+    public List<UserDto> getUsersOlderThan(@PathVariable String birthDate) {
+        return userService.findOlderThan(birthDate)
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
+
+    /**
+     * This method deletes a user with a given ID.
+     * 
+     * @param userId ID of the user to be deleted
+     * @return Response entity with status NO_CONTENT
+     */
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * This method updates a user with a given ID.
+     * 
+     * @param userId  ID of the user to be updated
+     * @param userDto User data to be updated
+     * @return Updated user
+     */
+    @PutMapping("/{userId}")
+    public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        User updatedUser = userService.updateUser(userId, userMapper.toEntity(userDto));
+        return userMapper.toDto(updatedUser);
     }
 }

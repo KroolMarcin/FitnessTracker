@@ -135,14 +135,14 @@ class TrainingApiIntegrationTest extends IntegrationTestBase {
 
         String requestBody = """
                 {
-                    "userId": "%s",
+                    "user": {"id":"%s","firstName":"%s","lastName":"%s","birthdate":"%s","email":"%s"},
                     "startTime": "2024-04-01T11:00:00",
                     "endTime": "2024-04-01T11:00:00",
                     "activityType": "RUNNING",
                     "distance": 10.52,
                     "averageSpeed": 8.2
                 }
-                """.formatted(user1.getId());
+                """.formatted(user1.getId(), user1.getFirstName(), user1.getLastName(), user1.getBirthdate(), user1.getEmail());
         mockMvc.perform(post("/v1/trainings").contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andDo(log())
                 .andExpect(status().isCreated())
@@ -162,14 +162,14 @@ class TrainingApiIntegrationTest extends IntegrationTestBase {
         Training training1 = persistTraining(generateTrainingWithActivityType(user1, ActivityType.RUNNING));
         String requestBody = """
                 {
-                "userId": "%s",
+                "user": {"id":"%s","firstName":"%s","lastName":"%s","birthdate":"%s","email":"%s"},
                 "startTime": "2022-04-01T10:00:00",
                 "endTime": "2022-04-01T11:00:00",
                 "activityType": "TENNIS",
                 "distance": 0.0,
                 "averageSpeed": 0.0
                 }
-                """.formatted(user1.getId());
+                """.formatted(user1.getId(), user1.getFirstName(), user1.getLastName(), user1.getBirthdate(), user1.getEmail());
         mockMvc.perform(put("/v1/trainings/{trainingId}", training1.getId()).contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andDo(log())
                 .andExpect(status().isOk())

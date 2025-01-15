@@ -6,7 +6,7 @@
 
     <groupId>pl.wsb</groupId>
     <artifactId>CapWSB-FitnessTracker</artifactId>
-    <version>1.1.0-99787-SNAPSHOT</version>
+    <version>1.0.0-99787-SNAPSHOT</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -47,7 +47,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.28</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
